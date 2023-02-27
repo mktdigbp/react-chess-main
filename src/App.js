@@ -16,6 +16,9 @@ function handleMyMove() {
   if(settt== null) return false
   //valid move 
   setTimeout(makeRandomMove, 200);
+
+  const xx = game.fen();
+  console.log("yah", xx)
   return true;  
 }
  
@@ -77,8 +80,8 @@ function makeRandomMove(){
 
  //play random move 
  safeGameMutate((game)=>{
-  console.log("possiblemove", possibleMove)
-  console.log("game", game)
+  // console.log("possiblemove", possibleMove)
+  // console.log("game", game)
   const result = game.move(possibleMove[randomIndex]);
 // move random
   console.log("resss", result)
@@ -108,10 +111,10 @@ function onDrop(source,target){
 }
   return (
     <div className="app">
-      <Chessboard 
+      {/* <Chessboard 
       position={game.fen()}
       onPieceDrop ={onDrop}
-      />
+      /> */}
     
     <p>from:</p>
     <input value={currentMove.from} onChange={(e) => setCurrentMove({...currentMove, from: e.target.value})}/>
