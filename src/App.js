@@ -1,130 +1,119 @@
 import './App.css';
 import { useState } from 'react';
-import {Chessboard} from 'react-chessboard'
+// import {Chessboard} from 'react-chessboard'
+import FeatureBP from "./components/FeaturesBP"
 import {Chess} from 'chess.js'
-              
+
 function App() {
   const [game, setGame] = useState(new Chess());
-  const [currentMove, setCurrentMove] = useState({from: '', to: ''});
   const [myMove, setMyMove] = useState("");
-//Let's perform a function on the game state 
+  // const [myMoveSet, setMyMoveSet] = useState({});
+  const [associateMove, setAssociateMove] = useState("");
 
-function handleMyMove() {
-  const settt = makeAMove();
+  const [featuresSequel, setFeaturesSequel] = useState([]);
+  // const [currentData, setCurrentData] = useState("");
 
-    //illegal move 
-  if(settt== null) return false
-  //valid move 
-  setTimeout(makeRandomMove, 200);
+  // 
+  function handleMyMove() {
+    const settt = makeAMove();
+    console.log("end", settt)
 
-  const xx = game.fen();
-  console.log("yah", xx)
-  return true;  
-}
- 
-function setMove(source,target) {
-  console.log("doz", currentMove)
-  let move = null;
-  console.log("move", source, target)
-  safeGameMutate((game)=>{
-    move = game.move({
-      from:source,
-      to: target,
-      promotion:'q'
+    
+    // valid move
+    if(settt == null) return false
+    setTimeout(makeRandomMove(settt), 200);
+    // const timer = setTimeout(makeRandomMove, 200);
+    // clearTimeout(timer)
+    // const xx = game.fen();
+    // console.log("yah", xx)
+    return true;
+  }
+
+  // associate chat bp
+  function makeRandomMove(settt){
+    console.log("chat protecao veicular", settt)
+    const possibleMove = game.moves();
+
+    //select random move
+    if(game.game_over() || game.in_draw() || possibleMove.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * possibleMove.length);
+
+    //play random move 
+    safeGameMutate((game)=>{
+      const result = game.move(possibleMove[randomIndex]);
+      console.log("Associado", result)
+      
+      setFeaturesSequel([
+        ...featuresSequel,
+        {
+          color: settt.color,
+          flags: settt.flags,
+          from: settt.from,
+          piece: settt.place,
+          san: settt.san,
+          to: settt.to,
+        },
+        {
+          color: result.color,
+          flags: result.flags,
+          from: result.from,
+          piece: result.place,
+          san: result.san,
+          to: result.to,
+        },
+      ]);
     })
+  }
 
-    setCurrentMove({from: '', to: ''})
+  // 
+  function safeGameMutate(modify) {
+    setGame((g)=>{
+      const update = {...g}
+      modify(update)
+      return update;
+    })
+  }
 
-  //illegal move 
-  if(move== null) return false
-  //valid move 
-  setTimeout(makeRandomMove, 200);
-  return true;    
-})
-}
+  // human chat bp
+  function makeAMove() {
+    const gameCopy = { ...game };
+    const result = gameCopy.move(myMove);
+    setGame(gameCopy);
+    // setMyMoveSet(() =>result)
+    // setFeaturesSequel([
+    //   ...featuresSequel,
+    //   {
+    //     color: "b",
+    //     flags: "b",
+    //     from: "a7",
+    //     piece: "p",
+    //     san: "consultor",
+    //     to: "a5",
+    //   },
+    // ]);
 
-function safeGameMutate(modify){
-  setGame((g)=>{
-    const update = {...g}
-    modify(update)
-    return update;
-  })
-}
-
-// 
-function makeAMove() {
-  const gameCopy = { ...game };
-  const result = gameCopy.move(myMove);
-  setGame(gameCopy);
-  // setMyMove("");
-  console.log("res",result)
-  return result; // null if the move was illegal, the move object if the move was legal
+    console.log("BP",result)
+    return result; // null if the move was illegal, the move object if the move was legal
+  }
 
   
-  // //illegal move 
-  // if(move== null) return false
-  // //valid move 
-  // setTimeout(makeRandomMove, 200);
-  // return true;  
-}
-
-
-// Movement of computer
-function makeRandomMove(){
-  const possibleMove = game.moves();
-
-  if(game.game_over() || game.in_draw() || possibleMove.length === 0) return;
-  //select random move
-
-  const randomIndex = Math.floor(Math.random() * possibleMove.length);
-
- //play random move 
- safeGameMutate((game)=>{
-  // console.log("possiblemove", possibleMove)
-  // console.log("game", game)
-  const result = game.move(possibleMove[randomIndex]);
-// move random
-  console.log("resss", result)
-  // console.log("random", possibleMove[randomIndex])
- })
-}
-
-//Perform an action when a piece is droped by a user
- 
-function onDrop(source,target){
-  let move = null;
-  console.log("move", source, target)
-  safeGameMutate((game)=>{
-    move = game.move({
-      from:source,
-      to: target,
-      promotion:'q'
-    })
-})
-
-
-  //illegal move 
-  if(move== null) return false
-  //valid move 
-  setTimeout(makeRandomMove, 200);
-  return true;
-}
   return (
     <div className="app">
       {/* <Chessboard 
       position={game.fen()}
       onPieceDrop ={onDrop}
       /> */}
-    
-    <p>from:</p>
+    <FeatureBP />
+    {/* <p>from:</p>
     <input value={currentMove.from} onChange={(e) => setCurrentMove({...currentMove, from: e.target.value})}/>
     <p>to:</p>
     <input value={currentMove.to} onChange={(e) => setCurrentMove({...currentMove, to: e.target.value})}/>
-    <button type='button' onClick={() => setMove(currentMove.from, currentMove.to)}>Click 1</button>
+    <button type='button' onClick={() => setMove(currentMove.from, currentMove.to)}>Click 1</button> */}
     <br />
     <input value={myMove} onChange={(e) => setMyMove(e.target.value)}/>
     <button type='button' onClick={() => handleMyMove()}>Move</button>
-
+    <pre>{JSON.stringify(featuresSequel,null,1)}</pre>
     </div>
   );
 }
