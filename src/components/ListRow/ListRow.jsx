@@ -5,9 +5,15 @@ const ListRow = ({ config }) => {
     <li className="flex items-center justify-between px-3 py-1 border-b border-gray-300">
       <div className="flex space-x-2 items-center">
         <div>
-          <i className={`bi-browser-edge text-sm`} />
+          <i
+            className={`bi-browser-edge text-sm ${
+              config.color === "w" ? "text-white" : "text-black"
+            }`}
+          />
         </div>
-        <div>{config.san}</div>
+        <div>
+          {config.turn + 1} - {config.san}
+        </div>
       </div>
       <div className="flex space-x-2 items-center">
         <div>{config.from}</div>
@@ -15,6 +21,7 @@ const ListRow = ({ config }) => {
           <i className={`bi-arrow-right text-sm`} />
         </div>
         <div>{config.to}</div>
+        <div>{config.time}</div>
       </div>
     </li>
   );
